@@ -1,2 +1,2 @@
 # rccmp
-REST API for RingCentral Inc. Change Management Portal
+REST API wrapper for RingCentral Inc. Change Management Portal

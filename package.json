@@ -1,0 +1,27 @@
+{
+  "name": "rccmp",
+  "version": "0.1.0",
+  "description": "REST API wrapper for RingCentral Inc. Change Manager Portal",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qvaqvaboo/rccmp.git"
+  },
+  "keywords": [
+    "REST",
+    "API",
+    "CMP"
+  ],
+  "author": "Vadim Efimov <qvaqvaboo@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/qvaqvaboo/rccmp/issues"
+  },
+  "homepage": "https://github.com/qvaqvaboo/rccmp#readme",
+  "dependencies": {
+    "request": "^2.72.0"
+  }
+}
