@@ -2,7 +2,7 @@ var request = require('request');
 
 module.exports = class CMP {
 
-  constructor(options) {
+  constructor( options = {} ) {
     this.user = options.user;
     this.pass = options.pass;
     this.host = options.host;
@@ -13,7 +13,7 @@ module.exports = class CMP {
     return "Basic " + Buffer(this.user + ":" + this.pass).toString("base64");
   }
 
-  url(resource, params) {
+  url( resource = '', params = {} ) {
 
     var url = this.host;
     if (this.port) url += ':' + this.port;
@@ -46,7 +46,7 @@ module.exports = class CMP {
 
   }
 
-  normalizer(resource) {
+  normalizer( resource = '' ) {
 
     try {
       return require('./normalizers/' + resource + 'Normalizer');
@@ -58,7 +58,7 @@ module.exports = class CMP {
   }
 
 
-  get(resource, params) {
+  get( resource = '', params = {} ) {
 
     var promise, normalizer = this.normalizer(resource);
 
