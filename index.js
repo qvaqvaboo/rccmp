@@ -77,7 +77,7 @@ module.exports = class CMP {
       request(options, function(error, response, body) {
 
         if(error) reject(error);
-
+        if(body && body.error) reject(body.error);
 
         var output = {}, entry, key;
 
