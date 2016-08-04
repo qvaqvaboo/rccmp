@@ -7,7 +7,11 @@ module.exports = class CMP {
     this.pass = options.pass;
     this.host = options.host;
     this.port = options.port;
-    this.rejectUnauthorized = options.rejectUnauthorized || true;
+
+    if (options.rejectUnauthorized === undefined) {
+      this.rejectUnauthorized = true;
+    } else this.rejectUnauthorized = Boolean(options.rejectUnauthorized);
+
   }
 
   auth() {
