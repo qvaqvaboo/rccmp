@@ -7,6 +7,7 @@ module.exports = class CMP {
     this.pass = options.pass;
     this.host = options.host;
     this.port = options.port;
+    this.rejectUnauthorized = options.rejectUnauthorized || true;
   }
 
   auth() {
@@ -69,6 +70,7 @@ module.exports = class CMP {
         method: 'get',
         json: true,
         qs: params,
+        rejectUnauthorized: this.rejectUnauthorized,
         headers: {
           "Authorization" : this.auth()
         }
