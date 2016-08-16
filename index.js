@@ -43,7 +43,7 @@ module.exports = class CMP {
         url += '/userAction.php?action=GetUsers';
       break;
       case 'requests':
-        url += '/requests.json?start=now';
+        url += '/requests.json';
       break;
     }
 
