@@ -42,9 +42,16 @@ module.exports = class CMP {
       case 'users':
         url += '/userAction.php?action=GetUsers';
       break;
+      case 'hosts':
+        url += '/userAction.php?action=GetHosts&type=paginated&rows=999';
+      break;
       case 'requests':
         url += '/requests.json';
       break;
+
+      default:
+        url += resource;
+        break;
     }
 
     return url;
@@ -88,15 +95,84 @@ module.exports = class CMP {
         var output = {}, entry, key;
 
         // convert array to map and normalize
-        for (key in body) {
+        if (resource == 'hosts') {
+          output = body.rows;
+        }
+        else{
+          for (key in body) {
 
-          entry = body[key];
-          if (normalizer) entry = normalizer(entry);
-          output[entry.id] = entry;
+            entry = body[key];
+            if (normalizer) entry = normalizer(entry);
+            output[entry.id] = entry;
 
+          }
         }
 
         resolve(output);
+
+      });
+
+
+    } );
+
+    return promise;
+
+  }
+
+  post( resource = '', params = {} ) {
+
+    var promise, normalizer = this.normalizer(resource);
+
+    promise = new Promise( (resolve, reject) => {
+
+      var options = {
+        url: this.url(resource),
+        method: 'post',
+        formData: params,
+        rejectUnauthorized: false,
+        headers: {
+          "Authorization" : this.auth()
+        }
+      };
+
+      request(options, function(error, response, body) {
+        if(error) reject(error);
+        body = JSON.parse(body);
+        if(body && body.error) reject(body.error);
+
+        resolve(body);
+
+      });
+
+
+    } );
+
+    return promise;
+
+  }
+
+  put( resource = '', params = {} ) {
+
+    var promise, normalizer = this.normalizer(resource);
+
+    promise = new Promise( (resolve, reject) => {
+
+      var options = {
+        url: this.url(resource),
+        method: 'put',
+        formData: params,
+        rejectUnauthorized: false,
+        headers: {
+          "Authorization" : this.auth()
+        }
+      };
+
+      request(options, function(error, response, body) {
+        if(error) reject(error);
+        body = JSON.parse(body);
+        if(body && body.error) reject(body.error);
+
+        resolve(body);
 
       });
 
