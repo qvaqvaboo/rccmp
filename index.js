@@ -160,7 +160,7 @@ module.exports = class CMP {
       var options = {
         url: this.url(resource),
         method: 'put',
-        formData: params,
+        form: params,
         rejectUnauthorized: false,
         headers: {
           "Authorization" : this.auth()
