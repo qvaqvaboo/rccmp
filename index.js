@@ -129,7 +129,7 @@ module.exports = class CMP {
         url: this.url(resource),
         method: 'post',
         json: true,
-        form: params,
+        formData: params,
         rejectUnauthorized: false,
         headers: {
           "Authorization" : this.auth()
