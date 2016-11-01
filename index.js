@@ -128,7 +128,8 @@ module.exports = class CMP {
       var options = {
         url: this.url(resource),
         method: 'post',
-        formData: params,
+        json: true,
+        form: params,
         rejectUnauthorized: false,
         headers: {
           "Authorization" : this.auth()
@@ -137,9 +138,7 @@ module.exports = class CMP {
 
       request(options, function(error, response, body) {
         if(error) reject(error);
-        body = JSON.parse(body);
         if(body && body.error) reject(body.error);
-
         resolve(body);
 
       });
@@ -160,6 +159,7 @@ module.exports = class CMP {
       var options = {
         url: this.url(resource),
         method: 'put',
+        json: true,
         form: params,
         rejectUnauthorized: false,
         headers: {
@@ -167,10 +167,14 @@ module.exports = class CMP {
         }
       };
 
+      console.log(options);
+
       request(options, function(error, response, body) {
         if(error) reject(error);
-        body = JSON.parse(body);
+        
         if(body && body.error) reject(body.error);
+
+        console.log(body);
 
         resolve(body);
 
