@@ -42,6 +42,9 @@ module.exports = class CMP {
       case 'users':
         url += '/userAction.php?action=GetUsers';
       break;
+      case 'user':
+        url += '/userAction.php?action=GetUsers';
+      break;
       case 'hosts':
         url += '/userAction.php?action=GetHosts&type=paginated&rows=999';
       break;
