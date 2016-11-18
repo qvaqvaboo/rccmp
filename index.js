@@ -1,4 +1,9 @@
+"use strict";
+
 var request = require('request');
+var Q = require('q');
+var moment = require('moment-timezone');
+var co = require('co');
 
 module.exports = class CMP {
 
@@ -98,7 +103,7 @@ module.exports = class CMP {
         var output = {}, entry, key;
 
         // convert array to map and normalize
-        if (resource == 'hosts') {
+        if (resource == 'hosts' && body) {
           output = body.rows;
         }
         else{
@@ -170,14 +175,10 @@ module.exports = class CMP {
         }
       };
 
-      console.log(options);
-
       request(options, function(error, response, body) {
         if(error) reject(error);
         
         if(body && body.error) reject(body.error);
-
-        console.log(body);
 
         resolve(body);
 
@@ -187,6 +188,75 @@ module.exports = class CMP {
     } );
 
     return promise;
+
+  }
+
+  generateCMR( data ) {
+
+    var deferred = Q.defer(); // Q is used because it has progress callback
+    var self = this;
+
+    if (!data['environment_id']) deferred.reject('missing environment_id');
+    if (!data['requesttype_id']) deferred.reject('missing requesttype_id');
+    if (!data['department_id']) deferred.reject('missing department_id');
+    if (!data['preapprovedchange_id']) deferred.reject('missing preapprovedchange_id');
+
+    co(function* () {
+
+      yield [];
+
+      var hostgroups = data.hostgroups;
+      data.hostgroups = 0; // number of CMR hostgroups to be created by default
+
+      deferred.notify('Creating CMR: ' + data['summary']); 
+      var cmr_id = yield self.post('requests', data);
+      cmr_id = cmr_id.requestID[0];
+      deferred.notify('SUCCESS: ' + cmr_id); 
+
+
+      // create hostgroups
+      for ( var hostgroup of hostgroups ) {
+
+        deferred.notify('Creating hostgroup: ' + hostgroup['target-value']);
+        var hostgroup_id = yield self.post('/requests/' + cmr_id + '/hostgroups', hostgroup);
+        hostgroup_id = hostgroup_id.hostgroupID[0];
+        deferred.notify('SUCCESS: ' + hostgroup_id);
+
+        if (hostgroup['target-value']) {
+          deferred.notify('Getting hosts');
+          var hosts = yield self.get('hosts', {
+            filters: '{"groupOp":"AND","rules":[{"field":"hostname","op":"bw","data":"' + hostgroup['target-value'] + '"}]}'
+          });
+
+          hosts = hosts.map( (el) => { return el.id} ).join(',');
+          deferred.notify('SUCCESS: ' + hosts);
+
+          deferred.notify('Applying hosts to hostgroup');
+          var units = yield self.put('/requests/' + cmr_id + '/hostgroups/' + hostgroup_id, { 'affected-hosts': hosts });
+          units = units.hostSummary.units;
+          deferred.notify('SUCCESS. Units are: ' + Object.keys(units) );
+
+        }
+
+        if (hostgroup['unit-state-id'] && units) {
+
+          for (var unit in units){
+            deferred.notify('Updating unit state: ' + unit + ' -> ' + hostgroup['unit-state-id']);
+            var updateUnits = yield self.put('/requests/' + cmr_id + '/unit/' + units[unit].id + '.json', {
+              'unit-state-id': hostgroup['unit-state-id']
+            });
+            deferred.notify('SUCCESS');
+          }
+
+        }
+
+      }
+
+    })
+    .then( () => {deferred.resolve()})
+    .catch( (err) => {deferred.reject(err)})
+
+    return deferred.promise;
 
   }
 
