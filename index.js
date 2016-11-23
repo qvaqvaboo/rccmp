@@ -200,6 +200,7 @@ module.exports = class CMP {
     if (!data['requesttype_id']) deferred.reject('missing requesttype_id');
     if (!data['department_id']) deferred.reject('missing department_id');
     if (!data['preapprovedchange_id']) deferred.reject('missing preapprovedchange_id');
+    var cmr_id;
 
     co(function* () {
 
@@ -209,7 +210,7 @@ module.exports = class CMP {
       data.hostgroups = 0; // number of CMR hostgroups to be created by default
 
       deferred.notify('Creating CMR: ' + data['summary']); 
-      var cmr_id = yield self.post('requests', data);
+      cmr_id = yield self.post('requests', data);
       cmr_id = cmr_id.requestID[0];
       deferred.notify('SUCCESS: ' + cmr_id); 
 
@@ -259,7 +260,7 @@ module.exports = class CMP {
       }
 
     })
-    .then( () => {deferred.resolve()})
+    .then( () => {deferred.resolve(cmr_id)})
     .catch( (err) => {deferred.reject(err)})
 
     return deferred.promise;
