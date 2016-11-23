@@ -215,6 +215,7 @@ module.exports = class CMP {
 
 
       // create hostgroups
+      var units_cache = {}; // { unit_name: unit_state } - cache of updated units
       for ( var hostgroup of hostgroups ) {
 
         deferred.notify('Creating hostgroup: ' + hostgroup['target-value']);
@@ -241,11 +242,16 @@ module.exports = class CMP {
         if (hostgroup['unit-state-id'] && units) {
 
           for (var unit in units){
-            deferred.notify('Updating unit state: ' + unit + ' -> ' + hostgroup['unit-state-id']);
-            var updateUnits = yield self.put('/requests/' + cmr_id + '/unit/' + units[unit].id + '.json', {
-              'unit-state-id': hostgroup['unit-state-id']
-            });
-            deferred.notify('SUCCESS');
+
+            if ( !units_cache[unit] || units_cache[unit] != hostgroup['unit-state-id'] )
+              deferred.notify('Updating unit state: ' + unit + ' -> ' + hostgroup['unit-state-id']);
+              var updateUnits = yield self.put('/requests/' + cmr_id + '/unit/' + units[unit].id + '.json', {
+                'unit-state-id': hostgroup['unit-state-id']
+              });
+              deferred.notify('SUCCESS');
+              units_cache[unit] = hostgroup['unit-state-id'];
+            }
+            
           }
 
         }
