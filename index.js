@@ -98,7 +98,7 @@ module.exports = class CMP {
       request(options, function(error, response, body) {
 
         if(error) reject(error);
-        if(body && body.error) reject(body.error);
+        if(body && body.error) reject(body);
 
         var output = {}, entry, key;
 
@@ -146,7 +146,7 @@ module.exports = class CMP {
 
       request(options, function(error, response, body) {
         if(error) reject(error);
-        if(body && body.error) reject(body.error);
+        if(body && body.error) reject(body);
         resolve(body);
 
       });
@@ -178,7 +178,7 @@ module.exports = class CMP {
       request(options, function(error, response, body) {
         if(error) reject(error);
         
-        if(body && body.error) reject(body.error);
+        if(body && body.error) reject(body);
 
         resolve(body);
 
@@ -222,7 +222,7 @@ module.exports = class CMP {
         deferred.notify('Creating hostgroup: ' + hostgroup['target-value']);
         var hostgroup_id = yield self.post('/requests/' + cmr_id + '/hostgroups', hostgroup);
         hostgroup_id = hostgroup_id.hostgroupID[0];
-        deferred.notify('SUCCESS: ' + hostgroup_id);
+        deferred.notify('Creating hostgroup: ' + hostgroup['target-value'] + ' SUCCESS');
 
         if (hostgroup['target-value']) {
           deferred.notify('Getting hosts');
@@ -231,12 +231,12 @@ module.exports = class CMP {
           });
 
           hosts = hosts.map( (el) => { return el.id} ).join(',');
-          deferred.notify('SUCCESS: ' + hosts);
+          deferred.notify('Getting hosts SUCCESS: ' + hosts);
 
           deferred.notify('Applying hosts to hostgroup');
           var units = yield self.put('/requests/' + cmr_id + '/hostgroups/' + hostgroup_id, { 'affected-hosts': hosts });
           units = units.hostSummary.units;
-          deferred.notify('SUCCESS. Units are: ' + Object.keys(units) );
+          deferred.notify('Applying hosts to hostgroup SUCCESS. Units are: ' + Object.keys(units) );
 
         }
 
@@ -249,7 +249,7 @@ module.exports = class CMP {
               var updateUnits = yield self.put('/requests/' + cmr_id + '/unit/' + units[unit].id + '.json', {
                 'unit-state-id': hostgroup['unit-state-id']
               });
-              deferred.notify('SUCCESS');
+              deferred.notify('Updating unit state : ' + unit + ' -> ' + hostgroup['unit-state-id'] + 'SUCCESS');
               units_cache[unit] = hostgroup['unit-state-id'];
             }
 
