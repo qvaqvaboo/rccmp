@@ -48,7 +48,7 @@ module.exports = class CMP {
         url += '/userAction.php?action=GetUsers';
       break;
       case 'user':
-        url += '/userAction.php?action=GetUsers';
+        url += '/userAction.php?action=GetUser';
       break;
       case 'hosts':
         url += '/userAction.php?action=GetHosts&type=paginated&rows=999';
@@ -100,23 +100,16 @@ module.exports = class CMP {
         if(error) reject(error);
         if(body && body.error) reject(body);
 
-        var output = {}, entry, key;
+        // exceptions
+        if (resource === 'hosts' && body) body = body.rows;
 
-        // convert array to map and normalize
-        if (resource == 'hosts' && body) {
-          output = body.rows;
-        }
-        else{
-          for (key in body) {
-
-            entry = body[key];
-            if (normalizer) entry = normalizer(entry);
-            output[entry.id] = entry;
-
-          }
+        // normalize
+        if (normalizer) {
+          if ( Array.isArray(body) ) body = body.map( (el) => { return normalizer(el) });
+          else if ( typeof body === 'object' ) body = normalizer(body);
         }
 
-        resolve(output);
+        resolve(body);
 
       });
 
@@ -209,6 +202,38 @@ module.exports = class CMP {
       var hostgroups = data.hostgroups;
       data.hostgroups = 0; // number of CMR hostgroups to be created by default
 
+      // convert usernames to user IDs
+      var usersSet = new Set( data['internal-resources-users-id'].split(',') );
+      var usersMap = {};
+      usersSet.add( data['owner-id'] );
+      usersSet.add( data['sponsor-id'] );
+      usersSet.add( data['executor-id'] );
+      for (var user of usersSet.values() ) {
+        if (!user) continue;
+        if (parseInt(user)) continue;
+        user = user.trim();
+        deferred.notify('Searching CMP user id for: ' + user); 
+        var foo = yield self.get('users', {q: user})
+        if (!foo[0]) continue;
+        if (!foo[0].id) continue;
+        deferred.notify('Searching CMP user id SUCCESS: ' + foo[0].id);
+        usersMap[ user ] = foo[0].id;
+      }
+
+      if ( data['owner-id'] && !parseInt( data['owner-id'] ) ) data['owner-id'] = usersMap[ data['owner-id'] ];
+      if ( data['executor-id'] && !parseInt( data['executor-id'] ) ) data['executor-id'] = usersMap[ data['executor-id'] ];
+      if ( data['sponsor-id'] && !parseInt( data['sponsor-id'] ) ) data['sponsor-id'] = usersMap[ data['sponsor-id'] ];
+
+      if ( data['internal-resources-users-id'] ) {
+        data['internal-resources-users-id'] = data['internal-resources-users-id'].split(',')
+        .map( el => {
+          if (parseInt(el)) return parseInt(el);
+          if (typeof el === 'string' && usersMap[el.trim()]) return usersMap[el.trim()];
+          return '';
+        } ).join(',');
+      }
+
+      // create CMR
       deferred.notify('Creating CMR: ' + data['summary']); 
       cmr_id = yield self.post('requests', data);
       cmr_id = cmr_id.requestID[0];
