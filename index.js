@@ -279,7 +279,7 @@ module.exports = class CMP {
               var updateUnits = yield self.put('/requests/' + cmr_id + '/unit/' + units[unit].id + '.json', {
                 'unit-state-id': hostgroup['unit-state-id']
               });
-              deferred.notify('Updating unit state : ' + unit + ' -> ' + hostgroup['unit-state-id'] + 'SUCCESS');
+              deferred.notify('Updating unit state : ' + unit + ' -> ' + hostgroup['unit-state-id'] + ' SUCCESS');
               units_cache[unit] = hostgroup['unit-state-id'];
             }
 
