@@ -236,6 +236,7 @@ module.exports = class CMP {
       // create CMR
       deferred.notify('Creating CMR: ' + data['summary']); 
       cmr_id = yield self.post('requests', data);
+      if (!cmr_id.requestID) deferred.reject('something went wrong');
       cmr_id = cmr_id.requestID[0];
       deferred.notify('SUCCESS: ' + cmr_id); 
 
@@ -248,6 +249,10 @@ module.exports = class CMP {
         var hostgroup_id = yield self.post('/requests/' + cmr_id + '/hostgroups', hostgroup);
         hostgroup_id = hostgroup_id.hostgroupID[0];
         deferred.notify('Creating hostgroup: ' + hostgroup['target-value'] + ' SUCCESS');
+
+        deferred.notify('Updating hostgroup target-value');
+        yield self.put(`/requests/${cmr_id}/hostgroups/${hostgroup_id}`, {"target-value": hostgroup['target-value']});
+        deferred.notify('Updating hostgroup target-value SUCCESS');
 
         if (hostgroup['target-value']) {
           deferred.notify('Getting hosts');
