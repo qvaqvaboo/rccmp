@@ -203,7 +203,7 @@ module.exports = class CMP {
       data.hostgroups = 0; // number of CMR hostgroups to be created by default
 
       // convert usernames to user IDs
-      var usersSet = new Set( data['internal-resources-users-id'].split(',') );
+      var usersSet = new Set( (data['internal-resources-users-id'] || "" ).split(',') );
       var usersMap = {};
       usersSet.add( data['owner-id'] );
       usersSet.add( data['sponsor-id'] );
