@@ -233,6 +233,9 @@ module.exports = class CMP {
         } ).join(',');
       }
 
+      // clear undefined properties
+      Object.keys(data).forEach( key => {if(data[key] === undefined) delete data[key]} )
+
       // create CMR
       deferred.notify('Creating CMR: ' + data['summary']); 
       cmr_id = yield self.post('requests', data);
