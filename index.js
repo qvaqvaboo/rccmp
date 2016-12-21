@@ -239,7 +239,7 @@ module.exports = class CMP {
       // create CMR
       deferred.notify('Creating CMR: ' + data['summary']); 
       cmr_id = yield self.post('requests', data);
-      if (!cmr_id.requestID) deferred.reject('something went wrong');
+      if (!cmr_id.requestID) deferred.reject(cmr_id);
       cmr_id = cmr_id.requestID[0];
       deferred.notify('SUCCESS: ' + cmr_id); 
 
