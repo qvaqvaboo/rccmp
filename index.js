@@ -203,7 +203,7 @@ module.exports = class CMP {
       data.hostgroups = 0; // number of CMR hostgroups to be created by default
 
       // convert usernames to user IDs
-      var usersSet = new Set( (data['internal-resources-users-id'] || "" ).split(',') );
+      var usersSet = new Set( data['internal-resources-users-id'].split(',') );
       var usersMap = {};
       usersSet.add( data['owner-id'] );
       usersSet.add( data['sponsor-id'] );
@@ -220,9 +220,9 @@ module.exports = class CMP {
         usersMap[ user ] = foo[0].id;
       }
 
-      if ( data['owner-id'] && !parseInt( data['owner-id'] ) ) data['owner-id'] = usersMap[ data['owner-id'] ];
-      if ( data['executor-id'] && !parseInt( data['executor-id'] ) ) data['executor-id'] = usersMap[ data['executor-id'] ];
-      if ( data['sponsor-id'] && !parseInt( data['sponsor-id'] ) ) data['sponsor-id'] = usersMap[ data['sponsor-id'] ];
+      if ( data['owner-id'] && !parseInt( data['owner-id'] ) && usersMap[ data['owner-id'] ] ) data['owner-id'] = usersMap[ data['owner-id'] ];
+      if ( data['executor-id'] && !parseInt( data['executor-id'] && usersMap[ data['executor-id'] ] ) ) data['executor-id'] = usersMap[ data['executor-id'] ];
+      if ( data['sponsor-id'] && !parseInt( data['sponsor-id'] ) && usersMap[ data['sponsor-id'] ] ) data['sponsor-id'] = usersMap[ data['sponsor-id'] ];
 
       if ( data['internal-resources-users-id'] ) {
         data['internal-resources-users-id'] = data['internal-resources-users-id'].split(',')
