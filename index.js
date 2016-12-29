@@ -263,7 +263,7 @@ module.exports = class CMP {
             filters: '{"groupOp":"AND","rules":[{"field":"hostname","op":"bw","data":"' + hostgroup['target-value'] + '"}]}'
           });
 
-          hosts = hosts.map( (el) => { return el.id} ).join(',');
+          if (hosts) hosts = hosts.map( (el) => { return parseInt(el.id)} ).join(',');
           deferred.notify('Getting hosts SUCCESS: ' + hosts);
 
           deferred.notify('Applying hosts to hostgroup');
