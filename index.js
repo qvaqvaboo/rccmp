@@ -128,12 +128,16 @@ module.exports = class CMP {
 
       var options = {
         url: this.url(resource),
-        method: 'post',
+        method: 'POST',
         json: true,
-        formData: params,
+        body: Object.keys(params).map( (e) => {
+          return e + '=' + params[e]
+        }).join('&'),
+
         rejectUnauthorized: false,
         headers: {
-          "Authorization" : this.auth()
+          "Authorization" : this.auth(),
+          "Content-Type" : "application/x-www-form-urlencoded"
         }
       };
 
@@ -159,12 +163,15 @@ module.exports = class CMP {
 
       var options = {
         url: this.url(resource),
-        method: 'put',
+        method: 'PUT',
         json: true,
-        form: params,
+        body: Object.keys(params).map( (e) => {
+          return e + '=' + params[e]
+        }).join('&'),
         rejectUnauthorized: false,
         headers: {
-          "Authorization" : this.auth()
+          "Authorization" : this.auth(),
+          "Content-Type" : "application/x-www-form-urlencoded"
         }
       };
 
