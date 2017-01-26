@@ -132,7 +132,7 @@ module.exports = class CMP {
         json: true,
         body: Object.keys(params).map( (e) => {
           return e + '=' + params[e]
-        }).join('&'),
+        }).join('&').replace(/ /g, "+"),
 
         rejectUnauthorized: false,
         headers: {
@@ -167,7 +167,7 @@ module.exports = class CMP {
         json: true,
         body: Object.keys(params).map( (e) => {
           return e + '=' + params[e]
-        }).join('&'),
+        }).join('&').replace(/ /g, "+"),
         rejectUnauthorized: false,
         headers: {
           "Authorization" : this.auth(),
