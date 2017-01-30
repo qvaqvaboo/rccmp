@@ -93,7 +93,7 @@ module.exports = class CMP {
         headers: {}
       };
 
-      this.user && options.headers["Authorization"] = this.auth()
+      if (this.user) options.headers["Authorization"] = this.auth()
 
       request(options, function(error, response, body) {
 
@@ -140,7 +140,7 @@ module.exports = class CMP {
         }
       };
 
-      this.user && options.headers["Authorization"] = this.auth()
+      if (this.user) options.headers["Authorization"] = this.auth()
 
       request(options, function(error, response, body) {
         if(error) reject(error);
@@ -175,7 +175,7 @@ module.exports = class CMP {
         }
       };
 
-      this.user && options.headers["Authorization"] = this.auth()
+      if (this.user) options.headers["Authorization"] = this.auth()
 
       request(options, function(error, response, body) {
         if(error) reject(error);
