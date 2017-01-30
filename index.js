@@ -90,10 +90,10 @@ module.exports = class CMP {
         json: true,
         qs: params,
         rejectUnauthorized: this.rejectUnauthorized,
-        headers: {
-          "Authorization" : this.auth()
-        }
+        headers: {}
       };
+
+      this.user && options.headers["Authorization"] = this.auth()
 
       request(options, function(error, response, body) {
 
@@ -136,10 +136,11 @@ module.exports = class CMP {
 
         rejectUnauthorized: false,
         headers: {
-          "Authorization" : this.auth(),
           "Content-Type" : "application/x-www-form-urlencoded"
         }
       };
+
+      this.user && options.headers["Authorization"] = this.auth()
 
       request(options, function(error, response, body) {
         if(error) reject(error);
@@ -170,10 +171,11 @@ module.exports = class CMP {
         }).join('&').replace(/ /g, "+"),
         rejectUnauthorized: false,
         headers: {
-          "Authorization" : this.auth(),
           "Content-Type" : "application/x-www-form-urlencoded"
         }
       };
+
+      this.user && options.headers["Authorization"] = this.auth()
 
       request(options, function(error, response, body) {
         if(error) reject(error);
