@@ -1,6 +1,6 @@
 {
   "name": "rccmp",
-  "version": "0.5.11",
+  "version": "0.5.12",
   "description": "REST API wrapper for RingCentral Inc. Change Manager Portal",
   "main": "index.js",
   "scripts": {
