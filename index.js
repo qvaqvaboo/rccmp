@@ -90,7 +90,7 @@ module.exports = class CMP {
         json: true,
         qs: params,
         rejectUnauthorized: this.rejectUnauthorized,
-        headers: {}
+        withCredentials: true
       };
 
       if (this.user) options.headers["Authorization"] = this.auth()
@@ -135,6 +135,7 @@ module.exports = class CMP {
         }).join('&').replace(/ /g, "+"),
 
         rejectUnauthorized: false,
+        withCredentials: true,
         headers: {
           "Content-Type" : "application/x-www-form-urlencoded"
         }
@@ -170,6 +171,7 @@ module.exports = class CMP {
           return e + '=' + params[e]
         }).join('&').replace(/ /g, "+"),
         rejectUnauthorized: false,
+        withCredentials: true,
         headers: {
           "Content-Type" : "application/x-www-form-urlencoded"
         }
