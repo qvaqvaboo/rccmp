@@ -90,7 +90,8 @@ module.exports = class CMP {
         json: true,
         qs: params,
         rejectUnauthorized: this.rejectUnauthorized,
-        withCredentials: true
+        withCredentials: true,
+        headers: {}
       };
 
       if (this.user) options.headers["Authorization"] = this.auth()
