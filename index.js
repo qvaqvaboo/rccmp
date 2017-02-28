@@ -280,7 +280,8 @@ module.exports = class CMP {
 
           deferred.notify('Applying hosts to hostgroup');
           var units = yield self.put('/requests/' + cmr_id + '/hostgroups/' + hostgroup_id, { 'affected-hosts': hosts || '' });
-          units = units.hostSummary.units;
+          console.log(units);
+          units = units.hostSummary ? units.hostSummary.units : undefined;
           deferred.notify('Applying hosts to hostgroup SUCCESS. Units are: ' + Object.keys(units) );
 
         }
