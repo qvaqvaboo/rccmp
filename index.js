@@ -132,7 +132,7 @@ module.exports = class CMP {
         method: 'POST',
         json: true,
         body: Object.keys(params).map( (e) => {
-          return e + '=' + params[e]
+          return e + '=' + encodeURIComponent(params[e])
         }).join('&').replace(/ /g, "+"),
 
         rejectUnauthorized: false,
