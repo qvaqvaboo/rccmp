@@ -1,11 +1,11 @@
 var CMP = require('./index');
 
-var cmp = new CMP({host: 'https://stage-cmp2.ringcentral.com', user: 'vadim.efimov', pass: 'Kents46!', rejectUnauthorized: false});
+var cmp = new CMP({host: 'https://stage-cmp2.ringcentral.com', user: 'vadim.efimov', pass: '-!', rejectUnauthorized: false});
 var cmr = {
   "summary": "8.4 in-place upgrade: sjc01-p09 part1",
   "external-title": "8.4 in-place upgrade",
   "projects[]": [
-    1780
+    1780, 1781
   ],
   "customer-facing": 0,
   "no-risk": 1,

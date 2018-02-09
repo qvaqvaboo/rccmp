@@ -22,13 +22,14 @@ module.exports = class CMP {
   params2form( params = {} ) {
 
     var form = '';
-    form = Object.keys(params).map( (e) => {
-      value = params[e];
-      if ( e.substring( e.length - 2) === '[]' ) {
+    form = Object.keys(params).map( (key) => {
+      var value = params[key];
+      if ( key.substring( key.length - 2) === '[]' ) {
         // workaround for form array
-        return params.split(',').map( (v) => { e + '=' + encodeURIComponent(params[v])})
+        value = Array.isArray(value) ? value : value.split(',')
+        return value.map( (v) => key + '=' + encodeURIComponent(v) ).join('&')
       } 
-      else return e + '=' + encodeURIComponent(params[e])
+      else return key + '=' + encodeURIComponent(value)
     }).join('&').replace(/ /g, "+") 
 
     return form
