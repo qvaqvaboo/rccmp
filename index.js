@@ -19,6 +19,22 @@ module.exports = class CMP {
 
   }
 
+  params2form( params = {} ) {
+
+    var form = '';
+    form = Object.keys(params).map( (e) => {
+      value = params[e];
+      if ( e.substring( e.length - 2) === '[]' ) {
+        // workaround for form array
+        return params.split(',').map( (v) => { e + '=' + encodeURIComponent(params[v])})
+      } 
+      else return e + '=' + encodeURIComponent(params[e])
+    }).join('&').replace(/ /g, "+") 
+
+    return form
+
+  }
+
   auth() {
     return "Basic " + Buffer(this.user + ":" + this.pass).toString("base64");
   }
@@ -131,10 +147,7 @@ module.exports = class CMP {
         url: this.url(resource),
         method: 'POST',
         json: true,
-        body: Object.keys(params).map( (e) => {
-          return e + '=' + encodeURIComponent(params[e])
-        }).join('&').replace(/ /g, "+"),
-
+        body: this.params2form(params),
         rejectUnauthorized: false,
         withCredentials: true,
         headers: {
@@ -168,9 +181,7 @@ module.exports = class CMP {
         url: this.url(resource),
         method: 'PUT',
         json: true,
-        body: Object.keys(params).map( (e) => {
-          return e + '=' + params[e]
-        }).join('&').replace(/ /g, "+"),
+        body: this.params2form(params),
         rejectUnauthorized: false,
         withCredentials: true,
         headers: {
